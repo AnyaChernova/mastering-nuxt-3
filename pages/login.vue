@@ -12,14 +12,26 @@
 
 <script setup lang="ts">
 import { useCourse } from "~/composables/useCourse";
-import { useSupabaseClient } from "#imports";
+import { navigateTo, useRoute, useSupabaseClient, useSupabaseUser, watchEffect } from '#imports';
 
 const { title } = useCourse();
+const { query } = useRoute();
 const supabase = useSupabaseClient();
+const user = useSupabaseUser();
+
+watchEffect(async () => {
+	if (user.value) {
+		await navigateTo(query.redirectTo as string, {
+			replace: true,
+		});
+	}
+});
 
 const login = async () => {
+	const redirectTo = `${window.location.origin}${query.redirectTo}`;
 	const { error } = await supabase.auth.signInWithOAuth({
 		provider: "github",
+		options: { redirectTo },
 	});
 
 	if (error) {

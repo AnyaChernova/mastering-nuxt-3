@@ -1,8 +1,14 @@
-import { defineNuxtRouteMiddleware, navigateTo } from '#imports';
+import {
+	defineNuxtRouteMiddleware,
+	navigateTo,
+	useSupabaseUser,
+} from "#imports";
 
 export default defineNuxtRouteMiddleware((to, from) => {
-	if (to.params.chapterSlug === "1-chapter-1") {
+	const user = useSupabaseUser();
+
+	if (user.value || to.params.chapterSlug === "1-chapter-1") {
 		return;
 	}
-	return navigateTo("/login");
-})
+	return navigateTo(`/login?redirectTo=${to.path}`);
+});
