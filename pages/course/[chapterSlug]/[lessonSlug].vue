@@ -35,7 +35,7 @@ import { useCourse } from "@/composables/useCourse";
 
 definePageMeta({
 	middleware: [
-		function ({ params }, from) {
+		function ({ params }) {
 			const course = useCourse();
 
 			const chapter = course.chapters.find(
@@ -64,6 +64,7 @@ definePageMeta({
 				);
 			}
 		},
+		"auth",
 	],
 });
 
