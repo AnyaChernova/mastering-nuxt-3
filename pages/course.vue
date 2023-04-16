@@ -1,10 +1,11 @@
 <template>
-	<div class="flex justify-center items-center w-full mb-10">
+	<div class="mb-4 flex justify-between items-center w-full max-w-5xl">
 		<h1 class="text-3xl">
 			<span class="font-medium">
 				<span class="font-bold">{{ course.title }}</span>
 			</span>
 		</h1>
+		<UserCard />
 	</div>
 	<div class="flex justify-center grow">
 		<div
@@ -47,6 +48,7 @@
 
 <script setup lang="ts">
 import { useCourse } from "@/composables/useCourse";
+import UserCard from "~/components/UserCard.vue";
 
 const course = useCourse();
 </script>
