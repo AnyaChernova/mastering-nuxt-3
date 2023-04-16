@@ -22,30 +22,53 @@
 
 <script setup lang="ts">
 import { useTitle, useLocalStorage } from "@vueuse/core";
-import { useRoute, computed, createError, definePageMeta } from '#imports';
+import {
+	useRoute,
+	computed,
+	createError,
+	definePageMeta,
+	abortNavigation,
+} from "#imports";
 import VideoPlayer from "@/components/VideoPlayer";
 import LessonCompleteBtn from "@/components/LessonCompleteBtn";
 import { useCourse } from "@/composables/useCourse";
 
+definePageMeta({
+	middleware: [
+		function ({ params }, from) {
+			const course = useCourse();
+
+			const chapter = course.chapters.find(
+				({ slug }) => slug === params.chapterSlug
+			);
+
+			if (!chapter) {
+				return abortNavigation(
+					createError({
+						statusCode: 404,
+						message: "Chapter not found",
+					})
+				);
+			}
+
+			const lesson = chapter.lessons.find(
+				({ slug }) => slug === params.lessonSlug
+			);
+
+			if (!lesson) {
+				return abortNavigation(
+					createError({
+						statusCode: 404,
+						message: "Lesson not found",
+					})
+				);
+			}
+		},
+	],
+});
+
 const course = useCourse();
 const route = useRoute();
-
-definePageMeta({
-	validate({ params }) {
-		const course = useCourse();
-
-		const chapter = course.chapters.find(({ slug }) => slug === params.chapterSlug);
-
-		if (!chapter) {
-			throw createError({
-				statusCode: 404,
-				message: 'Chapter not found',
-			});
-		}
-
-		return true;
-	}
-})
 
 const chapter = computed(() => {
 	return course.chapters.find(({ slug }) => slug === route.params.chapterSlug);
@@ -56,13 +79,6 @@ const lesson = computed(() => {
 		({ slug }) => slug === route.params.lessonSlug
 	);
 });
-
-if (!lesson.value) {
-	throw createError({
-		statusCode: 404,
-		message: 'Lesson not found',
-	});
-}
 
 const title = computed(() => {
 	return `${lesson.value!.title}`;
