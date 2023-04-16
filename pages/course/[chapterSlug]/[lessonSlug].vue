@@ -48,6 +48,7 @@ import {
 import VideoPlayer from "@/components/VideoPlayer";
 import LessonCompleteBtn from "@/components/LessonCompleteBtn";
 import { useCourse } from "@/composables/useCourse";
+import useLesson from '~/composables/useLesson';
 
 definePageMeta({
 	middleware: [
@@ -86,34 +87,30 @@ definePageMeta({
 
 const course = useCourse();
 const route = useRoute();
+const { chapterSlug, lessonSlug } = route.params;
+const lesson = await useLesson(chapterSlug as string, lessonSlug as string);
 
 const chapter = computed(() => {
 	return course.chapters.find(({ slug }) => slug === route.params.chapterSlug);
 });
 
-const lesson = computed(() => {
-	return chapter.value!.lessons.find(
-		({ slug }) => slug === route.params.lessonSlug
-	);
-});
-
 const title = computed(() => {
-	return `${lesson.value!.title}`;
+	return `${lesson.value.title}`;
 });
 useTitle(title);
 
 const progress = useLocalStorage("progress", []);
 const isLessonComplete = computed(() => {
-	if (!progress.value[chapter.value!.number - 1]?.[lesson?.value?.number - 1]) {
+	if (!progress.value[chapter.value!.number - 1]?.[lesson.value.number - 1]) {
 		return false;
 	}
-	return progress.value[chapter.value!.number - 1][lesson.value!.number - 1];
+	return progress.value[chapter.value!.number - 1][lesson.value.number - 1];
 });
 const toggleComplete = () => {
 	if (!progress.value[chapter.value!.number - 1]) {
 		progress.value[chapter.value!.number - 1] = [];
 	}
-	progress.value[chapter.value!.number - 1][lesson.value!.number - 1] =
+	progress.value[chapter.value!.number - 1][lesson.value.number - 1] =
 		!isLessonComplete.value;
 };
 </script>
