@@ -1,11 +1,10 @@
 import { defineEventHandler } from "h3";
-import course from "~/server/courseData";
 import { Chapter, Course, Lesson, LessonWithPath } from "~/types/course";
 import { createError } from "#imports";
-
-course as Course;
+import courseData from "~/server/courseData";
 
 export default defineEventHandler((event): LessonWithPath => {
+	const course: Course = courseData;
 	const { chapterSlug, lessonSlug } = event.context.params;
 
 	const chapter: Maybe<Chapter> = course.chapters.find(
