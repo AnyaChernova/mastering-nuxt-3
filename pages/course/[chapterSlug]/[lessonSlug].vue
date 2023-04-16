@@ -4,6 +4,22 @@
 	</h2>
 	<p class="font-medium">{{ chapter.title }}</p>
 	<p class="text-violet-500 font-medium">{{ lesson.title }}</p>
+	<div class="flex space-x-4 mt-2 mb-5">
+		<NuxtLink
+			v-if="lesson.sourceUrl"
+			class="underline font-normal text-md text-gray-500"
+			:to="lesson.sourceUrl"
+		>
+			Download Source Code
+		</NuxtLink>
+		<NuxtLink
+			v-if="lesson.downloadUrl"
+			class="underline font-normal text-md text-gray-500"
+			:to="lesson.downloadUrl"
+		>
+			Download Video
+		</NuxtLink>
+	</div>
 	<div class="mt-5">
 		<VideoPlayer v-if="lesson.videoId" :video-id="lesson.videoId" />
 	</div>
