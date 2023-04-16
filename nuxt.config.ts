@@ -3,5 +3,5 @@ export default defineNuxtConfig({
 	imports: {
 		autoImport: false,
 	},
-	modules: ["@nuxtjs/tailwindcss", "@vueuse/nuxt"],
+	modules: ["@nuxtjs/tailwindcss", "@vueuse/nuxt", "@nuxtjs/supabase"],
 });
