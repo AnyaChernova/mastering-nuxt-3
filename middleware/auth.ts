@@ -4,7 +4,7 @@ import {
 	useSupabaseUser,
 } from "#imports";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware((to) => {
 	const user = useSupabaseUser();
 
 	if (user.value || to.params.chapterSlug === "1-chapter-1") {

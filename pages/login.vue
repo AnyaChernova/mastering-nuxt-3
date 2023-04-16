@@ -12,7 +12,13 @@
 
 <script setup lang="ts">
 import { useCourse } from "~/composables/useCourse";
-import { navigateTo, useRoute, useSupabaseClient, useSupabaseUser, watchEffect } from '#imports';
+import {
+	navigateTo,
+	useRoute,
+	useSupabaseClient,
+	useSupabaseUser,
+	watchEffect,
+} from "#imports";
 
 const { title } = useCourse();
 const { query } = useRoute();

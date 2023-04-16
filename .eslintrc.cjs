@@ -12,5 +12,6 @@ module.exports = {
 	plugins: [],
 	rules: {
 		"vue/no-multiple-template-root": "off",
+		"no-console": ["error", { allow: ["warn", "error"] }],
 	},
 };

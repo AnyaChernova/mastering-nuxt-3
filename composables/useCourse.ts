@@ -1,31 +1,9 @@
 import courseData from "~/composables/courseData";
-
-type Lesson = {
-	title: string;
-	slug: string;
-	number: number;
-	downloadUrl: string;
-	videoId: number;
-	text: string;
-	sourceUrl?: string;
-	path: string;
-};
-
-type Chapter = {
-	title: string;
-	slug: string;
-	number: number;
-	lessons: Lesson[];
-};
-
-type Course = {
-	title: string;
-	chapters: Chapter[];
-};
+import { Chapter, Course, Lesson, LessonWithPath } from "~/types/course";
 
 export const useCourse = (): Course => {
 	const chapters: Chapter[] = courseData.chapters.map((chapter: Chapter) => {
-		const lessons: Lesson[] = chapter.lessons.map((lesson) => {
+		const lessons: LessonWithPath[] = chapter.lessons.map((lesson: Lesson) => {
 			return {
 				...lesson,
 				path: `/course/${chapter.slug}/${lesson.slug}`,

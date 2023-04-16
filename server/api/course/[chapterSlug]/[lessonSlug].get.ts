@@ -1,11 +1,16 @@
 import { defineEventHandler } from "h3";
 import course from "~/server/courseData";
+import { Chapter, Course, Lesson, LessonWithPath } from "~/types/course";
 import { createError } from "#imports";
 
-export default defineEventHandler((event) => {
+course as Course;
+
+export default defineEventHandler((event): LessonWithPath => {
 	const { chapterSlug, lessonSlug } = event.context.params;
 
-	const chapter = course.chapters.find(({ slug }) => slug === chapterSlug);
+	const chapter: Maybe<Chapter> = course.chapters.find(
+		({ slug }) => slug === chapterSlug
+	);
 
 	if (!chapter) {
 		throw createError({
@@ -14,7 +19,9 @@ export default defineEventHandler((event) => {
 		});
 	}
 
-	const lesson = chapter.lessons.find(({ slug }) => slug === lessonSlug);
+	const lesson: Maybe<Lesson> = chapter.lessons.find(
+		({ slug }) => slug === lessonSlug
+	);
 
 	if (!lesson) {
 		throw createError({
@@ -23,5 +30,8 @@ export default defineEventHandler((event) => {
 		});
 	}
 
-	return lesson;
+	return {
+		...lesson,
+		path: `/course/${chapter.slug}/${lesson.slug}`,
+	};
 });

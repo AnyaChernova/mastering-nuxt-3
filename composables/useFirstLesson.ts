@@ -1,6 +1,6 @@
-import { useCourse } from '~/composables/useCourse';
+import { useCourse } from "~/composables/useCourse";
 
 export default () => {
 	const { chapters } = useCourse();
 	return chapters[0].lessons[0];
-}
+};
