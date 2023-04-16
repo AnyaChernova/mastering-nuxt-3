@@ -2,7 +2,7 @@
 	<div class="flex justify-center items-center w-full mb-10">
 		<h1 class="text-3xl">
 			<span class="font-medium">
-				<span class="font-bold">Course</span>
+				<span class="font-bold">{{ course.title }}</span>
 			</span>
 		</h1>
 	</div>
