@@ -35,12 +35,17 @@
 			</div>
 		</div>
 		<div class="prose p-12 bg-red-100 rounded-md max-w-[80ch]">
-			<NuxtPage />
+			<NuxtErrorBoundary>
+				<NuxtPage />
+				<template #error="{ error }">
+					<p>Oops! {{ error }}</p>
+				</template>
+			</NuxtErrorBoundary>
 		</div>
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { useCourse } from "@/composables/useCourse";
 
 const course = useCourse();
