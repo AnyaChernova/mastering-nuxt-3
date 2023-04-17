@@ -47,15 +47,15 @@ import {
 } from "#imports";
 import VideoPlayer from "@/components/VideoPlayer";
 import LessonCompleteBtn from "@/components/LessonCompleteBtn";
-import { useCourse } from "@/composables/useCourse";
 import useLesson from '~/composables/useLesson';
+import useCourse from '~/composables/useCourse';
 
 definePageMeta({
 	middleware: [
-		function ({ params }) {
-			const course = useCourse();
+		async function ({ params }) {
+			const course = await useCourse();
 
-			const chapter = course.chapters.find(
+			const chapter = course.value.chapters.find(
 				({ slug }) => slug === params.chapterSlug
 			);
 
@@ -85,13 +85,13 @@ definePageMeta({
 	],
 });
 
-const course = useCourse();
+const course = await useCourse();
 const route = useRoute();
 const { chapterSlug, lessonSlug } = route.params;
 const lesson = await useLesson(chapterSlug as string, lessonSlug as string);
 
 const chapter = computed(() => {
-	return course.chapters.find(({ slug }) => slug === route.params.chapterSlug);
+	return course.value.chapters.find(({ slug }) => slug === route.params.chapterSlug);
 });
 
 const title = computed(() => {

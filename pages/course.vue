@@ -47,8 +47,8 @@
 </template>
 
 <script setup lang="ts">
-import { useCourse } from "@/composables/useCourse";
 import UserCard from "~/components/UserCard.vue";
+import useCourse from '~/composables/useCourse';
 
-const course = useCourse();
+const course = await useCourse();
 </script>

@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import { useCourse } from "~/composables/useCourse";
 import {
 	navigateTo,
 	useRoute,
@@ -19,8 +18,10 @@ import {
 	useSupabaseUser,
 	watchEffect,
 } from "#imports";
+import useCourse from '~/composables/useCourse';
 
-const { title } = useCourse();
+const course = await useCourse();
+const title = course.value.title;
 const { query } = useRoute();
 const supabase = useSupabaseClient();
 const user = useSupabaseUser();

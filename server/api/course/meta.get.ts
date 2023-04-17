@@ -1,25 +1,6 @@
 import { defineEventHandler } from "h3";
-import { Chapter, Course } from "~/types/course";
+import { Chapter, Course, CourseMeta, OutlineChapter, OutlineLesson } from '~/types/course';
 import courseData from "~/server/courseData";
-
-type OutlineBase = {
-	title: string;
-	slug: string;
-	number: number;
-};
-
-type OutlineLesson = OutlineBase & {
-	path: string;
-};
-
-type OutlineChapter = OutlineBase & {
-	lessons: OutlineLesson[];
-};
-
-type CourseMeta = {
-	title: string;
-	chapters: OutlineChapter[];
-};
 
 export default defineEventHandler((): CourseMeta => {
 	const course: Course = courseData;
