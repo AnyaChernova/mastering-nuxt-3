@@ -29,7 +29,8 @@
 	<div class="mt-5">
 		<ClientOnly>
 			<LessonCompleteBtn
-				:model-value="isLessonComplete"
+				v-if="user"
+				:model-value="isCompleted"
 				@update:model-value="toggleComplete"
 			/>
 		</ClientOnly>
@@ -43,12 +44,13 @@ import {
 	computed,
 	createError,
 	definePageMeta,
-	abortNavigation,
-} from "#imports";
+	abortNavigation, useSupabaseUser,
+} from '#imports';
 import VideoPlayer from "@/components/VideoPlayer";
 import LessonCompleteBtn from "@/components/LessonCompleteBtn";
 import useLesson from '~/composables/useLesson';
 import useCourse from '~/composables/useCourse';
+import { useCourseProgress } from '~/stores/courseProgress';
 
 definePageMeta({
 	middleware: [
@@ -85,32 +87,27 @@ definePageMeta({
 	],
 });
 
+const user = useSupabaseUser();
 const course = await useCourse();
 const route = useRoute();
 const { chapterSlug, lessonSlug } = route.params;
 const lesson = await useLesson(chapterSlug as string, lessonSlug as string);
+const store = useCourseProgress();
+const { initialize, toggleComplete } = store;
+
+initialize();
 
 const chapter = computed(() => {
 	return course.value.chapters.find(({ slug }) => slug === route.params.chapterSlug);
+});
+
+// Check if the current lesson is completed
+const isCompleted = computed(() => {
+	return store.progress?.[chapterSlug]?.[lessonSlug] || 0;
 });
 
 const title = computed(() => {
 	return `${lesson.value.title}`;
 });
 useTitle(title);
-
-const progress = useLocalStorage("progress", []);
-const isLessonComplete = computed(() => {
-	if (!progress.value[chapter.value!.number - 1]?.[lesson.value.number - 1]) {
-		return false;
-	}
-	return progress.value[chapter.value!.number - 1][lesson.value.number - 1];
-});
-const toggleComplete = () => {
-	if (!progress.value[chapter.value!.number - 1]) {
-		progress.value[chapter.value!.number - 1] = [];
-	}
-	progress.value[chapter.value!.number - 1][lesson.value.number - 1] =
-		!isLessonComplete.value;
-};
 </script>
