@@ -1,5 +1,5 @@
 <template>
-	<div class="mb-4 flex justify-between items-center w-full max-w-5xl">
+	<div class="mb-8 flex justify-between items-center w-full max-w-5xl">
 		<h1 class="text-3xl">
 			<span class="font-medium">
 				<span class="font-bold">{{ course.title }}</span>

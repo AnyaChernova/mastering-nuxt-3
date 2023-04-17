@@ -1,16 +1,10 @@
-import { createError, useFetch } from "#imports";
+import useFetchWithCache from '~/composables/useFetchWithCache';
+import { LessonWithPath } from '~/types/course';
 
-export default async (chapterSlug: string, lessonSlug: string) => {
-	const { data, error } = await useFetch(
+export default async (
+	chapterSlug: string,
+	lessonSlug: string
+) =>
+	useFetchWithCache<LessonWithPath>(
 		`/api/course/${chapterSlug}/${lessonSlug}`
 	);
-
-	if (error.value) {
-		throw createError({
-			...error.value,
-			statusMessage: `Could not fetch lesson ${lessonSlug} in ${chapterSlug}`,
-		});
-	}
-
-	return data;
-};
