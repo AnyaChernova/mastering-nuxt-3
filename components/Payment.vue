@@ -53,7 +53,8 @@
 <script setup lang="ts">
 import { Modal, Loading } from "#components";
 import useCourse from "~/composables/useCourse";
-import { ref, useHead, useRuntimeConfig } from "#imports";
+import { computed, navigateTo, ref, useHead, useRuntimeConfig } from '#imports';
+import Stripe from 'stripe';
 
 const course = await useCourse();
 const config = useRuntimeConfig();
@@ -74,17 +75,72 @@ const formStyle = {
 	},
 };
 
-function setupStripe() {
-	console.log("setupStripe");
-}
+const elements = computed(() => stripe.value?.elements());
 
-function login() {
-	console.log("login");
-}
+const setupStripe = () => {
+	stripe.value = Stripe(config.public.stripeKey);
 
-function handleSubmit() {
-	console.log("handleSubmit");
-}
+	if (!card.value && elements.value) {
+		card.value = elements.value.create('card', {
+			style: formStyle,
+		});
+		card.value.mount('#card-element');
+	}
+};
+
+const handleSubmit = async () => {
+	if (email.value === '') {
+		return;
+	}
+
+	processingPayment.value = true;
+	let secret;
+
+	try {
+		// Create a PaymentIntent with the order amount and currency
+		const response = await $fetch(
+			'/api/stripe/paymentIntent',
+			{
+				method: 'POST',
+				body: {
+					email: email.value,
+				},
+			}
+		);
+		secret = response;
+	} catch (e) {
+		console.log(e);
+	}
+
+	try {
+		const response = await stripe.value.confirmCardPayment(
+			secret,
+			{
+				payment_method: {
+					card: card.value,
+				},
+				receipt_email: email.value,
+			}
+		);
+
+		if (response.paymentIntent.status === 'succeeded') {
+			success.value = true;
+			paymentIntentId.value = response.paymentIntent.id;
+		}
+	} catch (e) {
+		console.log(e);
+	} finally {
+		processingPayment.value = false;
+	}
+};
+
+const login = async () => {
+	if (!paymentIntentId.value) {
+		return;
+	}
+	const redirectTo = `/linkWithPurchase/${paymentIntentId.value}`;
+	await navigateTo(`/login?redirectTo=${redirectTo}`);
+};
 
 useHead({
 	script: [
